@@ -1,13 +1,13 @@
-package com.homekey.ui.slideshow
+package com.bt_remote_server.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SlideshowViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is slideshow Fragment"
+        value = ""
     }
     val text: LiveData<String> = _text
 }

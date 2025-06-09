@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.homekey.server
+package com.bt_remote_server.server
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -49,7 +49,7 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
-import com.homekey.R
+import com.bt_remote_server.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -79,14 +79,13 @@ class BluetoothServerService : Service() {
         private const val TAG = "BluetoothServerService"
         private const val CHANNEL_ID = "BluetoothServerChannel"
         private const val NOTIFICATION_ID = 1
-        private const val SERVICE_NAME = "HomeKeyService"
+        private const val SERVICE_NAME = "BTRemoteControl"
         const val ACTION_DEVICE_CONNECTED =
-            "com.example.com.com.com.homekey.server.ACTION_DEVICE_CONNECTED"
+            "com.example.com.com.com.bt_remote_server.server.ACTION_DEVICE_CONNECTED"
 
         // Random UUID for our service known between the client and server to allow communication
         val SERVICE_UUID: UUID =
-            UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); // ESP32 SPP UUID
-//            UUID.fromString("02031405-0607-1809-8A0B-0C80DF9E34FB"); // SPP UUID
+            UUID.fromString("02031405-0607-1809-8A0B-0C80DF9E34FB"); // SPP UUID
         const val ACTION_START_SERVER = "start_srv"
         const val ACTION_STOP_SERVER = "stop_srv"
         const val EXTRA_DEVICE_NAME = "device_name"
@@ -199,25 +198,25 @@ class BluetoothServerService : Service() {
                 try {
                     serverSocket =
                         bluetoothAdapter?.listenUsingRfcommWithServiceRecord(
-                            SERVICE_NAME,
-                            SERVICE_UUID
+                            com.bt_remote_server.server.BluetoothServerService.Companion.SERVICE_NAME,
+                            com.bt_remote_server.server.BluetoothServerService.Companion.SERVICE_UUID
                         )
 
-                    Log.i(TAG, "Server started, waiting for connections...")
+                    Log.i(com.bt_remote_server.server.BluetoothServerService.Companion.TAG, "Server started, waiting for connections...")
 
                     val socket: BluetoothSocket? = serverSocket?.accept() // Blocking call
-                    Log.i(TAG, "Closing the socket")
+                    Log.i(com.bt_remote_server.server.BluetoothServerService.Companion.TAG, "Closing the socket")
                     serverSocket?.close() // Close after accepting one client
                     socket?.let {
                         updateConnectionStatus(true)
                         val deviceName = it.remoteDevice.name ?: "Unknown Device"
-                        Log.i(TAG, "Device connected: $deviceName")
+                        Log.i(com.bt_remote_server.server.BluetoothServerService.Companion.TAG, "Device connected: $deviceName")
                         broadcastDeviceConnected(deviceName)
                         showConnectionNotification(deviceName)
                         handleConnection(it)
                     }
                 } catch (e: IOException) {
-                    Log.e(TAG, "Error in server socket", e)
+                    Log.e(com.bt_remote_server.server.BluetoothServerService.Companion.TAG, "Error in server socket", e)
                     updateConnectionStatus(false)
                     delay(1) // Wait a bit before retrying
                 }
@@ -276,8 +275,33 @@ class BluetoothServerService : Service() {
 
     private fun processReceivedData(data: String) {
         Log.i(TAG, "Processing data: $data")
-        // Add logic to process or handle the received data here
-    }
+        // The data is expected in the format "type:button_number"
+        // e.g., "short:1" for a short press on button 1
+        // or "long:2" for a long press on button 2
+
+        val parts = data.trim().split(":")
+        if (parts.size == 2) {
+            val type = parts[0]
+            val buttonNumber = parts[1].toIntOrNull()
+
+            if (buttonNumber != null) {
+                when (type) {
+                    "short" -> {
+                        Log.i(TAG, "Short press on button $buttonNumber")
+                        // Add logic for short press
+                    }
+                    "long" -> {
+                        Log.i(TAG, "Long press on button $buttonNumber")
+                        // Add logic for long press
+                    }
+                    else -> Log.w(TAG, "Unknown command type: $type")
+                }
+            } else {
+                Log.w(TAG, "Invalid button number: ${parts[1]}")
+            }
+        } else {
+            Log.w(TAG, "Invalid data format: $data")
+        }    }
 
     private fun hasAdvertisingPermission() =
         Build.VERSION.SDK_INT < Build.VERSION_CODES.S || (ActivityCompat.checkSelfPermission(

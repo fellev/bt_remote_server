@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.homekey"
+    namespace = "com.bt_remote_server"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.homekey"
+        applicationId = "com.bt_remote_server"
         minSdk = 34
         targetSdk = 34
         versionCode = 1
@@ -52,4 +52,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("com.google.code.gson:gson:2.10.1")
 }

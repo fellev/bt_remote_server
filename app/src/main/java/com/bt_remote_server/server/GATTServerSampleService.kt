@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.homekey.server
+package com.bt_remote_server.server
 
 import android.Manifest
 import android.annotation.SuppressLint

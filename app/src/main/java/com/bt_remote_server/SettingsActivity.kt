@@ -1,4 +1,4 @@
-package com.homekey
+package com.bt_remote_server
 
 import android.content.SharedPreferences
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package com.homekey.server
+package com.bt_remote_server.server
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -20,7 +20,7 @@ object ServerUtils {
     }
 
     fun startServer(context: Context) {
-        setBluetoothAdapterName(context)
+        //setBluetoothAdapterName(context)
         val intent = Intent(context, BluetoothServerService::class.java).apply {
             action = BluetoothServerService.ACTION_START_SERVER
         }

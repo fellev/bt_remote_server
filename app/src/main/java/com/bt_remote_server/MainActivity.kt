@@ -1,4 +1,4 @@
-package com.homekey
+package com.bt_remote_server
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
@@ -24,12 +24,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.homekey.databinding.ActivityMainBinding
-import com.homekey.server.BluetoothServerService
-import com.homekey.server.BluetoothServerService.Companion.serverLogsState
+import com.bt_remote_server.databinding.ActivityMainBinding
+import com.bt_remote_server.server.BluetoothServerService
+import com.bt_remote_server.server.BluetoothServerService.Companion.serverLogsState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import com.homekey.server.ServerUtils
+import com.bt_remote_server.server.ServerUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -140,7 +140,8 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> {
                 // Handle the Settings menu item click
-                val intent = Intent(this, SettingsActivity::class.java)
+                val intent = Intent(this, ButtonConfigActivity::class.java)
+                intent.putExtra("button_index", 0) // for Button 1
                 startActivity(intent)
                 true
             }

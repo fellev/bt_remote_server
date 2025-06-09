@@ -1,13 +1,13 @@
-package com.homekey.ui.home
+package com.bt_remote_server.ui.gallery
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class HomeViewModel : ViewModel() {
+class GalleryViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = ""
+        value = "This is gallery Fragment"
     }
     val text: LiveData<String> = _text
 }

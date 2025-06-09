@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "homekey"
+rootProject.name = "bt_remote_server"
 include(":app")
  
