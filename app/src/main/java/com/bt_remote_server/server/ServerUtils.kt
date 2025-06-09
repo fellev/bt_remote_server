@@ -20,7 +20,6 @@ object ServerUtils {
     }
 
     fun startServer(context: Context) {
-        //setBluetoothAdapterName(context)
         val intent = Intent(context, BluetoothServerService::class.java).apply {
             action = BluetoothServerService.ACTION_START_SERVER
         }

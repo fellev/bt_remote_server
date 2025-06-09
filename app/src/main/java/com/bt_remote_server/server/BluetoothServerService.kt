@@ -18,6 +18,8 @@ package com.bt_remote_server.server
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -71,7 +73,6 @@ import java.util.UUID
  */
 class BluetoothServerService : Service() {
 
-    private val binder = LocalBinder()
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private var serverSocket: BluetoothServerSocket? = null
 
@@ -181,14 +182,15 @@ class BluetoothServerService : Service() {
     }
 
     private fun createNotificationChannel() {
-        val channel = NotificationChannelCompat.Builder(
-            CHANNEL_ID,
-            NotificationManagerCompat.IMPORTANCE_HIGH,
-        )
-            .setName("Bluetooth Server channel")
-            .setDescription("Channel for the Bluetooth server")
-            .build()
-        NotificationManagerCompat.from(this).createNotificationChannel(channel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val serviceChannel = NotificationChannel(
+                CHANNEL_ID,
+                "Bluetooth Server Service Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val manager = getSystemService(NotificationManager::class.java)
+            manager?.createNotificationChannel(serviceChannel)
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -315,12 +317,14 @@ class BluetoothServerService : Service() {
         sendBroadcast(intent)
     }
 
-    override fun onBind(intent: Intent?): IBinder = binder
-
-    inner class LocalBinder : Binder() {
-        fun getService(): BluetoothServerService = this@BluetoothServerService
+//    override fun onBind(intent: Intent?): IBinder = binder
+//
+//    inner class LocalBinder : Binder() {
+//        fun getService(): BluetoothServerService = this@BluetoothServerService
+//    }
+    override fun onBind(intent: Intent?): IBinder? {
+        return null // For started services, not bound services
     }
-
 
     internal fun Int.toConnectionStateString() = when (this) {
         BluetoothProfile.STATE_CONNECTED -> "Connected"
